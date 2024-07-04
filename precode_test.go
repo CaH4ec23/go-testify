@@ -10,8 +10,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const WRONH_CITY_ERROR = "wrong city value"
-
 func TestMainHandlerWhenCountMoreThanTotal(t *testing.T) {
 	totalCount := 4
 	req := httptest.NewRequest("GET", "/cafe?count=9&city=moscow", nil)
@@ -25,7 +23,7 @@ func TestMainHandlerWhenCountMoreThanTotal(t *testing.T) {
 	require.Equal(t, http.StatusOK, statusCode)
 
 	responseBody := strings.Split(responseRecorder.Body.String(), ",")
-	assert.Equal(t, totalCount, len(responseBody))
+	assert.Len(t, responseBody, totalCount)
 }
 
 func TestMainHandlerWhenOK(t *testing.T) {
@@ -38,10 +36,11 @@ func TestMainHandlerWhenOK(t *testing.T) {
 	statusCode := responseRecorder.Code
 
 	require.Equal(t, http.StatusOK, statusCode)
-	require.NotEmpty(t, responseRecorder.Body.String())
+	assert.NotEmpty(t, responseRecorder.Body)
 }
 
 func TestMainHandlerWhenMissingCount(t *testing.T) {
+	const WRONH_CITY_ERROR = "wrong city value"
 	req := httptest.NewRequest("GET", "/cafe?count=2&city=rostov", nil)
 
 	responseRecorder := httptest.NewRecorder()
